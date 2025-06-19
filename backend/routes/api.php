@@ -45,7 +45,7 @@ Route::prefix('staff')->group(function () {
         Route::get('/user', [StaffAuthController::class, 'user']);
         Route::post('/logout', [StaffAuthController::class, 'logout']);
 
-        Route::apiResource('/books', BookController::class)->except(['index', 'show']);
+        Route::apiResource('/books', BookController::class);
         Route::apiResource('/loans', LoanController::class);
         Route::get('/overdue-alerts', [LoanController::class, 'overdueAlerts']);
     });
