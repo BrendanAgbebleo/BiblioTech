@@ -20,7 +20,6 @@ return new class extends Migration
             $table->decimal('price', 8, 2); // e.g. 999,999.99
             $table->text('description')->nullable();
             $table->string('cover_img')->nullable(); // Path or URL
-
             $table->date('release_date')->nullable(); // Optional book release date
             $table->date('added_date'); // When the book was added to the library
 
