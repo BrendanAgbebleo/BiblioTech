@@ -2,16 +2,39 @@
 
 namespace App\Http\Controllers\Staff;
 
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use App\Models\StaffUser;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        // Authenticate staff and return token
+         $request->validate([
+            'uid' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $staff = StaffUser::where('uid', $request->uid)->first();
+
+        if (! $staff || ! Hash::check($request->password, $staff->password)) {
+            throw ValidationException::withMessages([
+                'uid' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        // Revoke old tokens (optional)
+        $staff->tokens()->delete();
+
+        $token = $staff->createToken('staff-token')->plainTextToken;
+
+        return response()->json([
+            'user' => $staff,
+            'token' => $token,
+        ]);
     }
 
     public function user(Request $request)
